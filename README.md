@@ -37,9 +37,9 @@ options:
 ```
 ## Examples
 
-To download top tabs from a specific artist:
+To download top tabs from a specific artist(s):
 ```
-songsterr-to-gp --search-artist "Artist Name"
+songsterr-to-gp "Artist Name" "Artist Name 2" "Artist Name 3"
 ```
 To search for a specific song by an artist:
 ```
