@@ -50,6 +50,18 @@ To specify a download path for the songs (default path is HOME_DIR/Tabs/):
 songsterr-to-gp --download-path /path/to/directory
 ```
 
+## Disclaimer
+
+Please note that I do not own any of the tabs provided by this script. All tabs are the property of Songsterr and their respective authors. This tool is designed to facilitate downloading tabs for personal use and should be used in compliance with Songsterr's terms of service and copyright laws.
+
+**Important:**
+- The use of this script and the downloaded tabs is entirely at your own discretion and risk.
+- This script is provided for educational and personal use only.
+- I am not responsible for any misuse of the tabs or any copyright infringement caused by the users of this script.
+- Users are encouraged to support the artists and the creators of the tabs by considering official sources or purchasing their music and tablatures.
+
+By using this script, you acknowledge and agree to these terms.
+
 
 
 
