@@ -1,0 +1,30 @@
+You need to have Python installed to run this script. Open a terminal/powershell and run:
+
+```
+	pip install https://github.com/onurhanak/Songsterr-to-GP/releases/download/v0.1/songsterr_to_gp-0.1-py3-none-any.whl
+```
+to install the package. 
+
+To use it, open a new terminal/refresh your session.
+
+Usage:
+
+```
+	usage: songsterr-to-gp [-h] [--download-path DOWNLOAD_PATH] [--search-artist SEARCH_ARTIST]
+	                       [--search-song ARTIST SONG]
+	                       [artists ...]
+	
+	Download songs from artists.
+	
+	positional arguments:
+	  artists               List of artists to download songs for
+	
+	options:
+	  -h, --help            show this help message and exit
+	  --download-path DOWNLOAD_PATH
+	                        Directory to save downloaded songs
+	  --search-artist SEARCH_ARTIST
+	                        Search for an artist
+	  --search-song ARTIST SONG
+	                        Search for a song by an artist
+```
