@@ -89,15 +89,12 @@ def main():
     parser = argparse.ArgumentParser(description='Download songs from artists.')
     parser.add_argument('artists', nargs='*', help='List of artists to download songs for')
     parser.add_argument('--download-path', type=str, default=get_default_download_path(), help='Directory to save downloaded songs')
-    parser.add_argument('--search-artist', help='Search for an artist')
     parser.add_argument('--search-song', nargs=2, metavar=('ARTIST', 'SONG'), help='Search for a song by an artist')
     args = parser.parse_args()
 
     downloader = SongDownloader(download_path=args.download_path)
 
-    if args.search_artist:
-        downloader.search_artists(args.search_artist)
-    elif args.search_song:
+    if args.search_song:
         artist, song_query = args.search_song
         songs_list = downloader.get_song_list([artist], song_query)
         downloader.download_gpx(songs_list)
