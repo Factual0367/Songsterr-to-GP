@@ -1,14 +1,18 @@
-import os
-import requests
-from bs4 import BeautifulSoup
-import xml.etree.ElementTree as ET
-from tqdm import tqdm
 import sys
+import json
+import requests
 import argparse
+from tqdm import tqdm
 from pathlib import Path
+from bs4 import BeautifulSoup
+
 
 def get_default_download_path():
     return Path.home() / 'Tabs'
+
+
+DEFAULT_DOWNLOAD_PATH = get_default_download_path()
+
 
 class SongDownloader:
     def __init__(self, download_path):
@@ -31,7 +35,7 @@ class SongDownloader:
         for artist in artists:
             params = {'pattern': artist}
             if song_name:
-                params['pattern'] += f" {song_name}"  
+                params['pattern'] += f" {song_name}"
             response = requests.get('https://www.songsterr.com/', params=params, headers=self.headers)
             soup = BeautifulSoup(response.content, 'html.parser')
             songs_div = soup.find('div', {'data-list': 'songs'})
@@ -47,14 +51,15 @@ class SongDownloader:
             for song in tqdm(songs, desc=f"Downloading songs for {artist}"):
                 try:
                     song_name, song_id = song['name'], song['id']
-                    response = requests.get(f'https://www.songsterr.com/a/ra/player/song/{song_id}.xml')
-                    root = ET.fromstring(response.text)
-                    attachment_url_element = root.find('.//attachmentUrl')
-                    if attachment_url_element is not None:
-                        attachment_url = attachment_url_element.text
-                        self.download_file(attachment_url, artist_path, song_name)
+                    response = requests.get(f'https://www.songsterr.com/api/meta/{song_id}/revisions')
+                    response_json = json.loads(response.text)
+                    latest_revision = response_json[0]
+                    revision_source = latest_revision['source']
+                    if revision_source:
+                        self.download_file(revision_source, artist, song_name)
                     else:
-                        print(f'No attachment URL for {song_name}')
+                        print("Could not find song.")
+
                 except Exception as e:
                     print(f"Error downloading {song_name}: {e}")
 
@@ -63,9 +68,9 @@ class SongDownloader:
             response = requests.get(url, stream=True)
             if response.status_code == 200:
                 extension = url.split('.')[-1]
-                filename = f"{artist}/{song_name}.{extension}"
+                filename = self.download_path / artist / f"{song_name}.{extension}"
                 with open(filename, 'wb') as file, tqdm(
-                    unit='B', unit_scale=True, unit_divisor=1024, total=int(response.headers.get('content-length', 0)), 
+                    unit='B', unit_scale=True, unit_divisor=1024, total=int(response.headers.get('content-length', 0)),
                     desc=f"Saving {song_name}", leave=False
                 ) as bar:
                     for chunk in response.iter_content(chunk_size=1024):
@@ -79,16 +84,17 @@ class SongDownloader:
 
     def download_specific_song(self, artist, song_query):
         songs_list = self.get_song_list([artist])
-        specific_song = [song for song in songs_list[artist] if song_query.lower() in song['name'].lower()]
+        specific_song = [song for song in songs_list[artist] if song_query.lower().replace(' ', '-') in song['name'].lower()]
         if specific_song:
             self.download_gpx({artist: specific_song})
         else:
             print(f"No song found for {song_query} by {artist}")
 
+
 def main():
     parser = argparse.ArgumentParser(description='Download songs from artists.')
     parser.add_argument('artists', nargs='*', help='List of artists to download songs for')
-    parser.add_argument('--download-path', type=str, default=get_default_download_path(), help='Directory to save downloaded songs')
+    parser.add_argument('--download-path', type=str, default=DEFAULT_DOWNLOAD_PATH, help='Directory to save downloaded songs')
     parser.add_argument('--search-song', nargs=2, metavar=('ARTIST', 'SONG'), help='Search for a song by an artist')
     args = parser.parse_args()
 
@@ -96,15 +102,14 @@ def main():
 
     if args.search_song:
         artist, song_query = args.search_song
-        songs_list = downloader.get_song_list([artist], song_query)
+        downloader.download_specific_song(artist, song_query)
+    elif args.artists:
+        songs_list = downloader.get_song_list(args.artists)
         downloader.download_gpx(songs_list)
     else:
-        if args.artists:
-            songs_list = downloader.get_song_list(args.artists)
-            downloader.download_gpx(songs_list)
-        else:
-            parser.print_help()
-            sys.exit(1)
+        parser.print_help()
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
