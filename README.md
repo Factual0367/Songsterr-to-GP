@@ -1,6 +1,6 @@
 # Songsterr to Guitar Pro 
 
-This script allows you to download tabs from Songsterr as Guitar Pro tabs.
+This script allows you to download tabs from Songsterr as Guitar Pro tabs. If you are looking for an app to do the same check out [TabStop](https://github.com/onurhanak/TabStop).
 
 ## Installation
 
