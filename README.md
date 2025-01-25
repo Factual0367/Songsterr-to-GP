@@ -45,7 +45,7 @@ To search for a specific song by an artist:
 ```
 songsterr-to-gp --search-song "Artist Name" "Song Title"
 ```
-To specify a download path for the songs (default path is HOME_DIR/Tabs/):
+To specify a download path for the songs (default path is $HOME/Tabs/):
 ```
 songsterr-to-gp --download-path /path/to/directory
 ```
