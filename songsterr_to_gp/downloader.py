@@ -30,17 +30,26 @@ class SongDownloader:
             'Connection': 'keep-alive',
         }
 
+
     def get_song_list(self, artists, song_name=None):
         songs = {}
         for artist in artists:
-            params = {'pattern': artist}
-            if song_name:
-                params['pattern'] += f" {song_name}"
-            response = requests.get('https://www.songsterr.com/', params=params, headers=self.headers)
-            soup = BeautifulSoup(response.content, 'html.parser')
-            songs_div = soup.find('div', {'data-list': 'songs'})
-            hrefs = [a.get('href') for a in songs_div.find_all('a')] if songs_div else []
-            songs[artist] = [{'name': href.split('/')[-1].split('-tab-')[0], 'id': href.split('-s')[-1]} for href in hrefs]
+            try:
+                query = artist
+                if song_name:
+                    query += f" {song_name}"
+
+                params = {'pattern': query, 'size': '50', 'from': '0'}
+                response = requests.get('https://www.songsterr.com/api/songs', params=params, headers=self.headers)
+
+                if response.status_code == 200:
+                    response_json = response.json()
+                    songs[artist] = [{'name': song['title'], 'id': song['songId']} for song in response_json]
+                else:
+                    print(f"No songs found for {artist}. Status Code: {response.status_code}")
+
+            except Exception as e:
+                print(f"Error processing artist {artist}: {e}")
 
         return songs
 
