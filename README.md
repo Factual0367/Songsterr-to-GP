@@ -7,7 +7,7 @@ This script allows you to download tabs from Songsterr as Guitar Pro tabs. If yo
 You need to have Python installed to run this script. To install the package, open a terminal (or PowerShell on Windows) and run the following command:
 
 ```
-pip install https://github.com/Factual0367/Songsterr-to-GP/releases/download/v0.1/songsterr_to_gp-0.1-py3-none-any.whl
+pip install https://github.com/Factual0367/Songsterr-to-GP/releases/download/v0.2/songsterr_to_gp-0.2-py3-none-any.whl
 ```
 
 After the installation, you may need to open a new terminal session or refresh your current session.
